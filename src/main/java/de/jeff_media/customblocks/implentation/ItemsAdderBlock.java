@@ -2,7 +2,10 @@ package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
 import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 
 public class ItemsAdderBlock extends CustomBlock {
 
@@ -16,6 +19,11 @@ public class ItemsAdderBlock extends CustomBlock {
 
     @Override
     public void place(Block block) {
+        place(block, null);
+    }
+
+    @Override
+    public void place(Block block, OfflinePlayer player) {
         iaBlock.place(block.getLocation());
     }
 
@@ -23,4 +31,10 @@ public class ItemsAdderBlock extends CustomBlock {
     public String getNamespace() {
         return "itemsadder";
     }
+
+    @Override
+    public Material getMaterial() {
+        return iaBlock.getBaseBlockData().getMaterial();
+    }
+
 }

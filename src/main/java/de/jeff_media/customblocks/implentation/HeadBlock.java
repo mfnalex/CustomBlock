@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -105,5 +106,10 @@ public class HeadBlock extends CustomBlock {
     @Override
     public String getNamespace() {
         return "head";
+    }
+
+    @Override
+    public Material getMaterial() {
+        return Material.PLAYER_HEAD;
     }
 }

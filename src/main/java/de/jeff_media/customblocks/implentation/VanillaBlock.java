@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
@@ -17,6 +18,11 @@ public class VanillaBlock extends CustomBlock {
     @Getter
     @Setter
     private final BlockData blockData;
+
+    public VanillaBlock(Material mat) {
+        super(mat.name());
+        this.blockData = Bukkit.createBlockData(mat);
+    }
 
     public VanillaBlock(String id) throws InvalidBlockDataException {
         super(id.replace("minecraft:",""));
@@ -43,9 +49,19 @@ public class VanillaBlock extends CustomBlock {
         return "minecraft";
     }
 
+    @Override
+    public Material getMaterial() {
+        return blockData.getMaterial();
+    }
+
 
     @Override
     public void place(Block block) {
+        place(block, null);
+    }
+
+    @Override
+    public void place(Block block, OfflinePlayer player) {
         block.setBlockData(blockData);
     }
 }

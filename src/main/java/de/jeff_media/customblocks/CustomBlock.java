@@ -8,14 +8,27 @@ import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import de.jeff_media.jefflib.exceptions.MissingPluginException;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 public abstract class CustomBlock {
 
-    public static CustomBlock fromString(String fullId) throws InvalidBlockDataException, MissingPluginException {
+    public static CustomBlock fromStringOrDefault(String fullId, Material fallback) {
+        try {
+            return fromStringOrThrow(fullId);
+        } catch (MissingPluginException | InvalidBlockDataException e) {
+            return new VanillaBlock(fallback);
+        }
+    }
+
+    public static CustomBlock fromStringOrThrow(String fullId) throws InvalidBlockDataException, MissingPluginException {
             if (fullId.startsWith("minecraft:") || !fullId.contains(":")) {
                 return new VanillaBlock(fullId);
             }
@@ -52,6 +65,8 @@ public abstract class CustomBlock {
 
     public abstract void place(Block block);
 
+    public abstract void place(Block block, OfflinePlayer player);
+
     public CustomBlock(String id) {
         this.id = id;
     };
@@ -59,4 +74,10 @@ public abstract class CustomBlock {
     public abstract String getNamespace();
 
     @Getter private final String id;
+
+    public void remove(Block block) {
+        block.setType(Material.AIR);
+    }
+
+    public abstract Material getMaterial();
 }

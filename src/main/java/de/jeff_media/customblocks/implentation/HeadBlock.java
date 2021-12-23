@@ -1,6 +1,7 @@
 package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
+import de.jeff_media.customblocks.PlacedCustomBlock;
 import de.jeff_media.jefflib.SkullUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,9 +9,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.UUID;
 
 public class HeadBlock extends CustomBlock {
@@ -20,14 +21,15 @@ public class HeadBlock extends CustomBlock {
     }
 
     @Override
-    public void place(Block block) {
-        place(block,null);
+    public PlacedCustomBlock place(Block block) {
+        return place(block,null);
     }
 
-    public void place(Block block, OfflinePlayer player) {
+    public PlacedCustomBlock place(Block block, OfflinePlayer player) {
         block.setType(Material.AIR);
         block.setType(Material.PLAYER_HEAD);
         System.out.println("Placing HeadBlock");
+
         // Set dynamic player
         if(getId().equalsIgnoreCase("player")) {
             System.out.println("Using dynamic player");
@@ -35,35 +37,32 @@ public class HeadBlock extends CustomBlock {
                 throw new IllegalArgumentException("Using head:player requires an OfflinePlayer");
             }
             setOfflinePlayer(block, player);
-            return;
         }
 
         // Set static player from name
-        if(isValidAccountName(getId())) {
+        else if(isValidAccountName(getId())) {
             System.out.println("Using static player name");
             setOfflinePlayer(block, getOfflinePlayerByName(getId()));
-            return;
         }
 
         // Set static player from UUID
-        if(isValidUUID(getId())) {
+        else if(isValidUUID(getId())) {
             System.out.println("Using static player UUID");
             setOfflinePlayer(block, getOfflinePlayerByUUID(getId()));
-            return;
         }
 
         // Base64 Texture
-        System.out.println("Using Base64: " + getId());
-        setBase64Texture(block);
+        else {
+            System.out.println("Using Base64: " + getId());
+            setBase64Texture(block);
+        }
+
+        return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
     }
 
     private void setBase64Texture(Block block) {
         BlockState state = block.getState();
         if(state instanceof Skull) {
-            /*final Skull skull = (Skull) state;
-            final GameProfile profile = new GameProfile(UUID.randomUUID(),"sk");
-            profile.getProperties().put("textures", new Property("textures",getId()));
-            */
             SkullUtils.setBase64Texture(block, getId());
         }
     }

@@ -1,6 +1,7 @@
 package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
+import de.jeff_media.customblocks.PlacedCustomBlock;
 import de.jeff_media.jefflib.EntityUtils;
 import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import io.th0rgal.oraxen.OraxenPlugin;
@@ -18,19 +19,19 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Rotation;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 import static io.th0rgal.oraxen.mechanics.provided.gameplay.furniture.FurnitureMechanic.*;
 
 public class OraxenBlock extends CustomBlock {
 
     private FurnitureMechanic furnitureMechanic = null;
-    private String itemUuid;
+    private UUID entityUUID;
     private ItemType type;
 
     private enum ItemType {
@@ -60,20 +61,27 @@ public class OraxenBlock extends CustomBlock {
     }
 
     @Override
-    public void place(Block block) {
-        place(block, null);
+    public PlacedCustomBlock place(Block block) {
+        return place(block, null);
     }
 
     @Override
-    public void place(Block block, OfflinePlayer player) {
+    public PlacedCustomBlock place(Block block, OfflinePlayer player) {
         switch(type) {
             case NOTE_BLOCK:
                 NoteBlockMechanicFactory.setBlockModel(block, getId());
-                break;
+                return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
             case FURNITURE:
-                itemUuid = UUID.randomUUID().toString();
                 furnitureMechanic.place(Rotation.NONE, 0, BlockFace.SELF, block.getLocation(), getId());
-                break;
+                ItemFrame itemFrame = FurnitureMechanic.getItemFrame(block.getLocation());
+                List<UUID> entityUUIDs = new ArrayList<>();
+                if(itemFrame != null) {
+                    entityUUID = itemFrame.getUniqueId();
+                    entityUUIDs.add(entityUUID);
+                }
+                return new PlacedCustomBlock(entityUUIDs,Collections.singletonList(block.getLocation()));
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -82,7 +90,7 @@ public class OraxenBlock extends CustomBlock {
         return null;
     }
 
-    @Override
+    /*@Override
     public void remove(Block block) {
         ItemFrame itemFrame = FurnitureMechanic.getItemFrame(block.getLocation());
         if(itemFrame != null) {
@@ -91,14 +99,14 @@ public class OraxenBlock extends CustomBlock {
         CustomBlockData cbd = new CustomBlockData(block,OraxenPlugin.get());
         cbd.clear();
         super.remove(block);
-    }
+    }*/
 
     @Override
     public Material getMaterial() {
         switch (type) {
             case FURNITURE: return Material.BARRIER;
             case NOTE_BLOCK: return Material.NOTE_BLOCK;
-            default: throw new IllegalArgumentException();
+            default: throw new IllegalStateException();
         }
     }
 }

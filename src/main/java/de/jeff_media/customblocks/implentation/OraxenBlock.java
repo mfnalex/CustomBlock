@@ -13,10 +13,7 @@ import io.th0rgal.oraxen.mechanics.provided.gameplay.furniture.FurnitureFactory;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.furniture.FurnitureMechanic;
 import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
 import io.th0rgal.oraxen.shaded.customblockdata.CustomBlockData;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Rotation;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -72,17 +69,27 @@ public class OraxenBlock extends CustomBlock {
                 NoteBlockMechanicFactory.setBlockModel(block, getId());
                 return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
             case FURNITURE:
-                furnitureMechanic.place(Rotation.NONE, 0, BlockFace.SELF, block.getLocation(), getId());
-                ItemFrame itemFrame = FurnitureMechanic.getItemFrame(block.getLocation());
+                ItemFrame itemFrame = furnitureMechanic.place(Rotation.NONE, 0, BlockFace.SELF, block.getLocation(), getId());
                 List<UUID> entityUUIDs = new ArrayList<>();
                 if(itemFrame != null) {
+                    //System.out.println(itemFrame);
                     entityUUID = itemFrame.getUniqueId();
                     entityUUIDs.add(entityUUID);
                 }
-                return new PlacedCustomBlock(entityUUIDs,Collections.singletonList(block.getLocation()));
+                return new PlacedCustomBlock(entityUUIDs,getFurnitureBarriers(block));
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    private List<Location> getFurnitureBarriers(Block block) {
+        if(furnitureMechanic == null) return null;
+        List<Location> list = new ArrayList<>();
+        furnitureMechanic.getBarriers().forEach(blockLocation -> {
+            Block barrier = block.getRelative(blockLocation.getX(), blockLocation.getY(), blockLocation.getZ());
+            list.add(barrier.getLocation());
+        });
+        return list;
     }
 
     @Override

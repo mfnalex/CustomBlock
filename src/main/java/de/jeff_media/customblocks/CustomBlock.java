@@ -33,7 +33,7 @@ public abstract class CustomBlock {
                 return new VanillaBlock(fullId);
             }
 
-            String[] split = fullId.split(":");
+            String[] split = fullId.split(":",2);
             if(split.length==1) {
                 throw new InvalidBlockDataException("Could not parse custom block data: " + fullId);
             }

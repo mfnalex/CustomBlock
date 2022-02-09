@@ -28,11 +28,11 @@ public class HeadBlock extends CustomBlock {
     public PlacedCustomBlock place(Block block, OfflinePlayer player) {
         block.setType(Material.AIR);
         block.setType(Material.PLAYER_HEAD);
-        System.out.println("Placing HeadBlock");
+        //System.out.println("Placing HeadBlock");
 
         // Set dynamic player
         if(getId().equalsIgnoreCase("player")) {
-            System.out.println("Using dynamic player");
+            //System.out.println("Using dynamic player");
             if(player == null) {
                 throw new IllegalArgumentException("Using head:player requires an OfflinePlayer");
             }
@@ -41,19 +41,19 @@ public class HeadBlock extends CustomBlock {
 
         // Set static player from name
         else if(isValidAccountName(getId())) {
-            System.out.println("Using static player name");
+            //System.out.println("Using static player name");
             setOfflinePlayer(block, getOfflinePlayerByName(getId()));
         }
 
         // Set static player from UUID
         else if(isValidUUID(getId())) {
-            System.out.println("Using static player UUID");
+            //System.out.println("Using static player UUID");
             setOfflinePlayer(block, getOfflinePlayerByUUID(getId()));
         }
 
         // Base64 Texture
         else {
-            System.out.println("Using Base64: " + getId());
+            //System.out.println("Using Base64: " + getId());
             setBase64Texture(block);
         }
 

@@ -12,12 +12,14 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class ItemsAdderBlock extends CustomBlock {
 
-    private final CustomStack customStack;
+    private dev.lone.itemsadder.api.CustomBlock customBlock = null;
+    private CustomStack customFurniture = null;
     private final ItemType type;
     private UUID entityUUID;
 
@@ -27,19 +29,27 @@ public class ItemsAdderBlock extends CustomBlock {
 
     public ItemsAdderBlock(String id) throws InvalidBlockDataException {
         super(id);
-        customStack = CustomStack.getInstance(id);
-        if(customStack == null) {
+        CustomStack stack = CustomStack.getInstance(id);
+        if(stack == null) {
             throw new InvalidBlockDataException("Could not find ItemsAdder block or furniture: " + id);
         }
 
-        if(customStack instanceof dev.lone.itemsadder.api.CustomBlock) {
+        if(stack.isBlock()) {
+            customBlock = dev.lone.itemsadder.api.CustomBlock.getInstance(id);
             type = ItemType.BLOCK;
-        } else if(customStack instanceof CustomFurniture) {
+        } else if (CustomFurniture.getInstance(id) != null) {
+            customFurniture = CustomFurniture.getInstance(id);
             type = ItemType.FURNITURE;
         } else {
             throw new InvalidBlockDataException("Could not find ItemsAdder block or furniture: " + id);
         }
     }
+
+    /*public static ItemsAdderBlock fromItemStack(ItemStack item) throws InvalidBlockDataException {
+        CustomStack stack = CustomStack.byItemStack(item);
+        System.out.println(stack.getNamespacedID());
+        return new ItemsAdderBlock(CustomStack.byItemStack(item).getNamespace());
+    }*/
 
     @Override
     public PlacedCustomBlock place(Block block) {
@@ -50,16 +60,17 @@ public class ItemsAdderBlock extends CustomBlock {
     public PlacedCustomBlock place(Block block, OfflinePlayer player) {
         switch (type) {
             case BLOCK:
-                ((dev.lone.itemsadder.api.CustomBlock) customStack).place(block.getLocation());
+                customBlock.place(block.getLocation());
                 return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
             case FURNITURE:
-                Entity armorStand = ((CustomFurniture) customStack).getArmorstand();
+                CustomFurniture placedFurniture = CustomFurniture.spawn(customFurniture.getNamespacedID(), block);
+                Entity armorStand = placedFurniture.getArmorstand();
                 List<UUID> placedEntities = new ArrayList<>();
-                if(armorStand != null) {
+                /*if(armorStand != null) {
                     entityUUID = armorStand.getUniqueId();
-                    ((CustomFurniture)customStack).teleport(block.getLocation().add(0.5,0.0,5));
+                    ((CustomFurniture)customStack).teleport(block.getLocation().add(0.5,0.0,5));*/
                     placedEntities.add(entityUUID);
-                }
+                //}
                 return new PlacedCustomBlock(placedEntities, Collections.singletonList(block.getLocation()));
             default:
                 throw new IllegalStateException();
@@ -85,7 +96,7 @@ public class ItemsAdderBlock extends CustomBlock {
     @Override
     public Material getMaterial() {
         switch(type) {
-            case BLOCK: return ((dev.lone.itemsadder.api.CustomBlock)customStack).getBaseBlockData().getMaterial();
+            case BLOCK: return customBlock.getBaseBlockData().getMaterial();
             case FURNITURE: return Material.BARRIER;
             default: throw new IllegalStateException();
         }

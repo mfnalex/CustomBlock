@@ -39,6 +39,7 @@ public class VanillaBlock extends CustomBlock {
 
         // Vanilla BlockData
         try {
+            id = id.toLowerCase(Locale.ROOT);
             this.blockData = Bukkit.createBlockData(id.startsWith("minecraft:") ? id : "minecraft:" + id);
         } catch (IllegalArgumentException exception) {
             throw new InvalidBlockDataException("Could not parse blockdata: " + id);
@@ -64,6 +65,7 @@ public class VanillaBlock extends CustomBlock {
 
     @Override
     public PlacedCustomBlock place(Block block, OfflinePlayer player) {
+        //System.out.println("Placing: " + blockData.getAsString());
         block.setBlockData(blockData);
         return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
     }

@@ -2,7 +2,6 @@ package de.jeff_media.customblocks.implentation;
 
 import com.google.common.base.Enums;
 import de.jeff_media.customblocks.CustomBlock;
-import de.jeff_media.customblocks.PlacedCustomBlock;
 import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
-import java.util.Collections;
 import java.util.Locale;
 
 public class VanillaBlock extends CustomBlock {
@@ -59,14 +57,14 @@ public class VanillaBlock extends CustomBlock {
 
 
     @Override
-    public PlacedCustomBlock place(Block block) {
-        return place(block, null);
+    public void place(Block block) {
+        super.place(block);
+        place(block, null);
     }
 
     @Override
-    public PlacedCustomBlock place(Block block, OfflinePlayer player) {
-        //System.out.println("Placing: " + blockData.getAsString());
+    public void place(Block block, OfflinePlayer player) {
+        super.place(block,player);
         block.setBlockData(blockData);
-        return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
     }
 }

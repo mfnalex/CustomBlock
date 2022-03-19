@@ -1,7 +1,6 @@
 package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
-import de.jeff_media.customblocks.PlacedCustomBlock;
 import de.jeff_media.jefflib.SkullUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,11 +20,13 @@ public class HeadBlock extends CustomBlock {
     }
 
     @Override
-    public PlacedCustomBlock place(Block block) {
-        return place(block,null);
+    public void place(Block block) {
+        super.place(block);
+        place(block,null);
     }
 
-    public PlacedCustomBlock place(Block block, OfflinePlayer player) {
+    public void place(Block block, OfflinePlayer player) {
+        super.place(block,player);
         block.setType(Material.AIR);
         block.setType(Material.PLAYER_HEAD);
         //System.out.println("Placing HeadBlock");
@@ -56,8 +57,6 @@ public class HeadBlock extends CustomBlock {
             //System.out.println("Using Base64: " + getId());
             setBase64Texture(block);
         }
-
-        return new PlacedCustomBlock(null, Collections.singletonList(block.getLocation()));
     }
 
     private void setBase64Texture(Block block) {

@@ -2,23 +2,29 @@ package de.jeff_media.customblocks;
 
 import de.jeff_media.customblocks.implentation.HeadBlock;
 import de.jeff_media.customblocks.implentation.ItemsAdderBlock;
-import de.jeff_media.customblocks.implentation.OraxenBlock;
 import de.jeff_media.customblocks.implentation.VanillaBlock;
 import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import de.jeff_media.jefflib.exceptions.MissingPluginException;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class CustomBlock {
+public abstract class CustomBlock implements ConfigurationSerializable {
+
+    protected Block block;
+    protected BlockData originalBlockData;
+    protected List<UUID> entities = new ArrayList<>();
 
     public static CustomBlock fromStringOrDefault(String fullId, Material fallback) {
         try {
@@ -47,9 +53,9 @@ public abstract class CustomBlock {
                 case "itemsadder":
                     checkForPlugin("itemsadder","ItemsAdder");
                     return new ItemsAdderBlock(id);
-                case "oraxen":
+                /*case "oraxen":
                     checkForPlugin("oraxen","Oraxen");
-                    return new OraxenBlock(id);
+                    return new OraxenBlock(id);*/
             }
 
             throw new InvalidBlockDataException("Could not parse custom block data: " + fullId);
@@ -63,9 +69,25 @@ public abstract class CustomBlock {
         }
     }
 
-    public abstract PlacedCustomBlock place(Block block);
+    public void place(Block block) {
+        place(block,null);
+    }
 
-    public abstract PlacedCustomBlock place(Block block, OfflinePlayer player);
+    public void place(Block block, OfflinePlayer player) {
+        this.block = block;
+        this.originalBlockData = block.getBlockData();
+    }
+
+    public void remove() {
+        if(originalBlockData != null) {
+            block.setBlockData(originalBlockData);
+        }
+        entities.forEach(uuid -> {
+            Entity entity = Bukkit.getEntity(uuid);
+            if(entity != null) entity.remove();
+        });
+        entities.clear();
+    }
 
     public CustomBlock(String id) {
         this.id = id;
@@ -76,5 +98,25 @@ public abstract class CustomBlock {
     @Getter private final String id;
 
     public abstract Material getMaterial();
+
+    public Map<String,Object> serialize() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("location",block == null ? null : block.getLocation());
+        map.put("originalBlockData",originalBlockData.getAsString());
+        map.put("entities",entities.stream().map(UUID::toString).collect(Collectors.toList()));
+        return map;
+    }
+
+    public static CustomBlock deserialize(Map<String,Object> map) throws MissingPluginException, InvalidBlockDataException {
+        CustomBlock cb = CustomBlock.fromStringOrThrow((String) map.get("id"));
+        Location location = (Location) map.get("location");
+        if(location != null) {
+            cb.block = location.getBlock();
+        }
+        cb.originalBlockData = Bukkit.createBlockData((String) map.get("originalBlockData"));
+        cb.entities = ((List<String>) map.get("entities")).stream().map(UUID::fromString).collect(Collectors.toList());
+        return cb;
+    }
 
 }

@@ -7,10 +7,7 @@ import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import de.jeff_media.jefflib.exceptions.MissingPluginException;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -101,8 +98,16 @@ public abstract class CustomBlock implements ConfigurationSerializable {
 
     public Map<String,Object> serialize() {
         Map<String,Object> map = new HashMap<>();
-        map.put("id",id);
-        map.put("location",block == null ? null : block.getLocation());
+        map.put("id",getNamespace() + ":" + id);
+        Map<String,Object> location = null;
+        if(block != null) {
+            location = new HashMap<>();
+            location.put("worldid",block.getWorld().getUID().toString());
+            location.put("x",block.getX());
+            location.put("y",block.getY());
+            location.put("z",block.getZ());
+        }
+        map.put("location",location);
         map.put("originalBlockData",originalBlockData.getAsString());
         map.put("entities",entities.stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
@@ -110,7 +115,20 @@ public abstract class CustomBlock implements ConfigurationSerializable {
 
     public static CustomBlock deserialize(Map<String,Object> map) throws MissingPluginException, InvalidBlockDataException {
         CustomBlock cb = CustomBlock.fromStringOrThrow((String) map.get("id"));
-        Location location = (Location) map.get("location");
+        Object locationObject = map.get("location");
+        Location location = null;
+        if(locationObject instanceof Location) {
+            location = (Location) map.get("location");
+        } else if(locationObject instanceof Map) {
+            Map<String,Object> locMap = (Map<String,Object>) locationObject;
+            UUID worldUuid = UUID.fromString((String)locMap.get("worldid"));
+            int x = (int) locMap.get("x");
+            int y = (int) locMap.get("y");
+            int z = (int) locMap.get("z");
+            World world = Bukkit.getWorld(worldUuid);
+            if(world == null) throw new IllegalArgumentException("World with UID " + worldUuid + " is not loaded.");
+            location = new Location(world, x,y,z,0,0);
+        }
         if(location != null) {
             cb.block = location.getBlock();
         }

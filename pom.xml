@@ -53,7 +53,7 @@
             <groupId>com.github.th0rgal</groupId>
             <artifactId>oraxen</artifactId>
             <version>-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

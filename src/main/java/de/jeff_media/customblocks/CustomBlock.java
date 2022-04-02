@@ -76,8 +76,12 @@ public abstract class CustomBlock implements ConfigurationSerializable {
     }
 
     public void remove() {
-        if(originalBlockData != null) {
-            block.setBlockData(originalBlockData);
+        if(block != null) {
+            if (originalBlockData != null) {
+                block.setBlockData(originalBlockData);
+            } else {
+                block.setType(Material.AIR);
+            }
         }
         entities.forEach(uuid -> {
             Entity entity = Bukkit.getEntity(uuid);

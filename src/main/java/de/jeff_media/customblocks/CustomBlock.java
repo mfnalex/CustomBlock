@@ -3,8 +3,8 @@ package de.jeff_media.customblocks;
 import de.jeff_media.customblocks.implentation.HeadBlock;
 import de.jeff_media.customblocks.implentation.ItemsAdderBlock;
 import de.jeff_media.customblocks.implentation.VanillaBlock;
-import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
-import de.jeff_media.jefflib.exceptions.MissingPluginException;
+import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
+import com.jeff_media.jefflib.exceptions.MissingPluginException;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.*;
@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class CustomBlock implements ConfigurationSerializable {
+public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
     protected Block block;
     protected BlockData originalBlockData;
@@ -112,7 +112,7 @@ public abstract class CustomBlock implements ConfigurationSerializable {
             location.put("z",block.getZ());
         }
         map.put("location",location);
-        map.put("originalBlockData",originalBlockData.getAsString());
+        map.put("originalBlockData",originalBlockData == null ? null : originalBlockData.getAsString());
         map.put("entities",entities.stream().map(UUID::toString).collect(Collectors.toList()));
         return map;
     }
@@ -136,7 +136,9 @@ public abstract class CustomBlock implements ConfigurationSerializable {
         if(location != null) {
             cb.block = location.getBlock();
         }
-        cb.originalBlockData = Bukkit.createBlockData((String) map.get("originalBlockData"));
+        if(map.get("originalBlockData") != null) {
+            cb.originalBlockData = Bukkit.createBlockData((String) map.get("originalBlockData"));
+        }
         cb.entities = ((List<String>) map.get("entities")).stream().map(UUID::fromString).collect(Collectors.toList());
         return cb;
     }

@@ -1,7 +1,7 @@
 package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
-import de.jeff_media.jefflib.SkullUtils;
+import com.jeff_media.jefflib.SkullUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;

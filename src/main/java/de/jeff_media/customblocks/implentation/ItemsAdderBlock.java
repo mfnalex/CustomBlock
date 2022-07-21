@@ -2,7 +2,7 @@ package de.jeff_media.customblocks.implentation;
 
 import de.jeff_media.customblocks.CustomBlock;
 import de.jeff_media.customblocks.CustomBlockUtils;
-import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
+import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Material;

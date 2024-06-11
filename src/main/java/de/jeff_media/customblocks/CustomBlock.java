@@ -1,10 +1,10 @@
 package de.jeff_media.customblocks;
 
+import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
+import com.jeff_media.jefflib.exceptions.MissingPluginException;
 import de.jeff_media.customblocks.implentation.HeadBlock;
 import de.jeff_media.customblocks.implentation.ItemsAdderBlock;
 import de.jeff_media.customblocks.implentation.VanillaBlock;
-import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
-import com.jeff_media.jefflib.exceptions.MissingPluginException;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.*;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
-    protected Block block;
-    protected BlockData originalBlockData;
-    protected List<UUID> entities = new ArrayList<>();
+    @Getter protected Block block;
+    @Getter protected BlockData originalBlockData;
+    @Getter protected List<UUID> entities = new ArrayList<>();
 
     public static CustomBlock fromStringOrDefault(String fullId, Material fallback) {
         try {
@@ -73,6 +73,11 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
     public void place(Block block, OfflinePlayer player) {
         this.block = block;
         this.originalBlockData = block.getBlockData();
+    }
+
+    @Override
+    public String toString() {
+        return "CustomBlock{" + "block=" + block + ", originalBlockData=" + originalBlockData + ", entities=" + entities + ", id='" + id + '\'' + '}';
     }
 
     public void remove() {

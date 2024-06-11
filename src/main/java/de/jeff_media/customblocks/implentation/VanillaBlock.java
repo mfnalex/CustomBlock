@@ -67,4 +67,9 @@ public class VanillaBlock extends CustomBlock {
         super.place(block,player);
         block.setBlockData(blockData);
     }
+
+    @Override
+    public String toString() {
+        return "VanillaBlock{" + "blockData=" + blockData + "} " + super.toString();
+    }
 }

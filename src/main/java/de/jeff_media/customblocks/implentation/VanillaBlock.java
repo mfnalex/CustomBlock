@@ -55,16 +55,9 @@ public class VanillaBlock extends CustomBlock {
         return blockData.getMaterial();
     }
 
-
-    @Override
-    public void place(Block block) {
-        super.place(block);
-        place(block, null);
-    }
-
     @Override
     public void place(Block block, OfflinePlayer player) {
-        super.place(block,player);
+        super.place(block, player);
         block.setBlockData(blockData);
     }
 

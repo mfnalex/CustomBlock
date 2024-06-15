@@ -4,8 +4,10 @@ import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import com.jeff_media.jefflib.exceptions.MissingPluginException;
 import de.jeff_media.customblocks.implentation.HeadBlock;
 import de.jeff_media.customblocks.implentation.ItemsAdderBlock;
+import de.jeff_media.customblocks.implentation.OraxenBlock;
 import de.jeff_media.customblocks.implentation.VanillaBlock;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 
 public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
-    @Getter protected Block block;
+    @Getter @Setter protected Block block;
     @Getter protected BlockData originalBlockData;
     @Getter protected List<UUID> entities = new ArrayList<>();
 
@@ -50,9 +52,9 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
                 case "itemsadder":
                     checkForPlugin("itemsadder","ItemsAdder");
                     return new ItemsAdderBlock(id);
-                /*case "oraxen":
+                case "oraxen":
                     checkForPlugin("oraxen","Oraxen");
-                    return new OraxenBlock(id);*/
+                    return new OraxenBlock(id);
             }
 
             throw new InvalidBlockDataException("Could not parse custom block data: " + fullId);
@@ -66,11 +68,11 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
         }
     }
 
-    public void place(Block block) {
-        place(block,null);
-    }
-
     public void place(Block block, OfflinePlayer player) {
+        block.getChunk().load();
+        if(this.block != null) {
+            remove(false);
+        }
         this.block = block;
         this.originalBlockData = block.getBlockData();
     }
@@ -81,11 +83,19 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
     }
 
     public void remove() {
+        remove(true);
+    }
+
+    public void remove(boolean unsetBlock) {
         if(block != null) {
+            block.getChunk().load();
             if (originalBlockData != null) {
                 block.setBlockData(originalBlockData);
             } else {
                 block.setType(Material.AIR);
+            }
+            if(unsetBlock) {
+                block = null;
             }
         }
         entities.forEach(uuid -> {
@@ -101,7 +111,7 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
     public abstract String getNamespace();
 
-    @Getter private final String id;
+    @Getter protected final String id;
 
     public abstract Material getMaterial();
 
@@ -115,6 +125,8 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
             location.put("x",block.getX());
             location.put("y",block.getY());
             location.put("z",block.getZ());
+        } else {
+            CustomBlockUtils.getLogger().warning("Block is null in CustomBlock.serialize() for block " + id);
         }
         map.put("location",location);
         map.put("originalBlockData",originalBlockData == null ? null : originalBlockData.getAsString());
@@ -143,6 +155,8 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
         }
         if(map.get("originalBlockData") != null) {
             cb.originalBlockData = Bukkit.createBlockData((String) map.get("originalBlockData"));
+        } else {
+            cb.originalBlockData = Material.AIR.createBlockData();
         }
         cb.entities = ((List<String>) map.get("entities")).stream().map(UUID::fromString).collect(Collectors.toList());
         return cb;

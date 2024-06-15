@@ -19,14 +19,8 @@ public class HeadBlock extends CustomBlock {
         super(id);
     }
 
-    @Override
-    public void place(Block block) {
-        super.place(block);
-        place(block,null);
-    }
-
     public void place(Block block, OfflinePlayer player) {
-        super.place(block,player);
+        super.place(block, player);
         block.setType(Material.AIR);
         block.setType(Material.PLAYER_HEAD);
         //System.out.println("Placing HeadBlock");

@@ -50,6 +50,12 @@ public class OraxenBlock extends CustomBlock {
                 Entity placed = furnitureMechanic.place(block.getLocation());
                 if (placed != null) {
                     entities.add(placed.getUniqueId());
+
+                    // Interaction Entity
+                    try {
+                        entities.add(furnitureMechanic.getInteractionEntity(placed).getUniqueId());
+                    } catch (Throwable ignored) { }
+
                 }
                 break;
             case NOTE_BLOCK:

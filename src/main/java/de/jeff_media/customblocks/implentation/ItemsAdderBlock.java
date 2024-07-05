@@ -57,7 +57,7 @@ public class ItemsAdderBlock extends CustomBlock {
 
     @Override
     public void remove(boolean unsetBlock) {
-        if(Thread.currentThread().getStackTrace().length <= 40) {
+        if(Thread.currentThread().getStackTrace().length <= 40) { // Prevent Stack overflow when calling from parent class
             remove();
         }
     }

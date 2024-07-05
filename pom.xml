@@ -6,7 +6,7 @@
 
     <groupId>com.jeff_media</groupId>
     <artifactId>CustomBlocks</artifactId>
-    <version>1.5.11-SNAPSHOT</version>
+    <version>1.5.16-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

@@ -5,6 +5,7 @@ import de.jeff_media.customblocks.CustomBlock;
 import de.jeff_media.customblocks.CustomBlockUtils;
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -55,8 +56,14 @@ public class ItemsAdderBlock extends CustomBlock {
     }
 
     @Override
-    public void remove() {
+    public void remove(boolean unsetBlock) {
+        if(Thread.currentThread().getStackTrace().length <= 40) {
+            remove();
+        }
+    }
 
+    @Override
+    public void remove() {
         if (block != null) {
             if (placedBlock != null) {
                 try {
@@ -78,6 +85,8 @@ public class ItemsAdderBlock extends CustomBlock {
                 }
             }
 
+        } else {
+            Bukkit.getLogger().info("CustomBlock is null");
         }
 
         super.remove();

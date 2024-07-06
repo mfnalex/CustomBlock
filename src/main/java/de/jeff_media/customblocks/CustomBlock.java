@@ -90,13 +90,9 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
         if(block != null) {
             block.getChunk().load();
             if (originalBlockData != null) {
-                System.out.println("CB#1: " + block);
                 block.setBlockData(originalBlockData);
-                System.out.println("CB#2: " + block);
             } else {
-                System.out.println("CB#3: " + block);
                 block.setType(Material.AIR);
-                System.out.println("CB#4: " + block);
             }
             if(unsetBlock) {
                 block = null;

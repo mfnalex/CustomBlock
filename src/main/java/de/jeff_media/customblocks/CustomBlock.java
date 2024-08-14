@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
     @Getter @Setter protected Block block;
-    @Getter protected BlockData originalBlockData;
+    @Getter @Setter protected BlockData originalBlockData;
     @Getter protected List<UUID> entities = new ArrayList<>();
 
     public static CustomBlock fromStringOrDefault(String fullId, Material fallback) {

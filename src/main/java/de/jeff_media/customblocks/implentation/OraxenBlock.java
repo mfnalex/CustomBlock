@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 
 public class OraxenBlock extends CustomBlock {
@@ -40,6 +41,14 @@ public class OraxenBlock extends CustomBlock {
         throw new InvalidBlockDataException("Could not find Oraxen block: " + id);
     }
 
+    private static float getYaw() {
+        return Float.parseFloat(System.getProperty("customblocks.oraxen.yaw", "0"));
+    }
+
+    private static BlockFace getBlockFace() {
+        return BlockFace.valueOf(System.getProperty("customblocks.oraxen.blockface", "DOWN"));
+    }
+
 
     @Override
     public void place(Block block, OfflinePlayer player) {
@@ -47,7 +56,7 @@ public class OraxenBlock extends CustomBlock {
         switch (type) {
             case FURNITURE:
                 block.setType(Material.AIR);
-                Entity placed = furnitureMechanic.place(block.getLocation());
+                Entity placed = furnitureMechanic.place(block.getLocation(), getYaw(), getBlockFace());
                 if (placed != null) {
                     entities.add(placed.getUniqueId());
 

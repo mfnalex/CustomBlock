@@ -2,17 +2,12 @@ package de.jeff_media.customblocks;
 
 import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import com.jeff_media.jefflib.exceptions.MissingPluginException;
-import de.jeff_media.customblocks.implentation.HeadBlock;
-import de.jeff_media.customblocks.implentation.ItemsAdderBlock;
-import de.jeff_media.customblocks.implentation.OraxenBlock;
-import de.jeff_media.customblocks.implentation.VanillaBlock;
+import de.jeff_media.customblocks.implentation.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
@@ -52,6 +47,9 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
                 case "itemsadder":
                     checkForPlugin("itemsadder","ItemsAdder");
                     return new ItemsAdderBlock(id);
+                case "nexo":
+                    checkForPlugin("nexo","Nexo");
+                    return new NexoBlock(id);
                 case "oraxen":
                     checkForPlugin("oraxen","Oraxen");
                     return new OraxenBlock(id);

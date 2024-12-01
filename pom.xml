@@ -6,7 +6,7 @@
 
     <groupId>com.jeff_media</groupId>
     <artifactId>CustomBlocks</artifactId>
-    <version>1.5.19-SNAPSHOT</version>
+    <version>1.6.19-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -30,6 +30,11 @@
             <id>oraxen</id>
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
+        </repository>
+        <repository>
+            <id>reposilite-repository-snapshots</id>
+            <name>Nexo Repository</name>
+            <url>https://repo.nexomc.com/snapshots</url>
         </repository>
     </repositories>
 
@@ -57,6 +62,19 @@
             <artifactId>api-itemsadder</artifactId>
             <version>2.5.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
+            <version>0.1.0-dev.66</version>
+            <scope>provided</scope>
+            <classifier>dev</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.byteflux</groupId>
+                    <artifactId>libby-bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.th0rgal</groupId>

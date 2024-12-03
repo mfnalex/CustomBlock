@@ -21,12 +21,20 @@ public class CustomBlockUtils {
     @NonNull
     private static Logger logger = Bukkit.getLogger();
 
+    public static boolean isDebug() {
+        return Boolean.parseBoolean(System.getProperty("customblocks.debug", "false"));
+    }
+
     public static void debug(String message) {
 
-        Plugin angelchest = Bukkit.getPluginManager().getPlugin("AngelChest");
-        if(angelchest == null) return;
+        if(isDebug()) {
+            logger.info("[CustomBlocks] " + message);
+        }
 
+    }
 
+    public static void setDebug(boolean debug) {
+        System.setProperty("customblocks.debug", String.valueOf(debug));
     }
 
     public static Collection<ArmorStand> getArmorStands(Block block) {

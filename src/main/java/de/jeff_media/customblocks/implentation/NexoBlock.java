@@ -43,11 +43,11 @@ public class NexoBlock extends CustomBlock {
     }
 
     private static float getYaw() {
-        return Float.parseFloat(System.getProperty("customblocks.nexooraxen.yaw", "0"));
+        return Float.parseFloat(System.getProperty("customblocks.nexo.yaw", "0"));
     }
 
     private static BlockFace getBlockFace() {
-        return BlockFace.valueOf(System.getProperty("customblocks.nexooraxen.blockface", "DOWN"));
+        return BlockFace.valueOf(System.getProperty("customblocks.nexo.blockface", "DOWN"));
     }
 
 

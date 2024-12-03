@@ -14,6 +14,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 
+import java.util.Objects;
+
 public class NexoBlock extends CustomBlock {
 
     private FurnitureMechanic furnitureMechanic = null;
@@ -29,7 +31,7 @@ public class NexoBlock extends CustomBlock {
         }
 
         // Furniture
-        FurnitureMechanic mechanicFactory = NexoFurniture.furnitureMechanic("furniture");
+        FurnitureMechanic mechanicFactory = NexoFurniture.furnitureMechanic(id);
         if (mechanicFactory != null) {
             type = ItemType.FURNITURE;
             furnitureMechanic = mechanicFactory;
@@ -78,7 +80,7 @@ public class NexoBlock extends CustomBlock {
     public void remove() {
         if (furnitureMechanic != null) {
 
-            entities.stream().map(Bukkit::getEntity).forEach(entity -> {
+            entities.stream().map(Bukkit::getEntity).filter(Objects::nonNull).forEach(entity -> {
                 try {
                     furnitureMechanic.removeBaseEntity((ItemDisplay) entity);
                 } catch (Exception ignored) {

@@ -2,6 +2,7 @@ package de.jeff_media.customblocks.implentation;
 
 import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import de.jeff_media.customblocks.CustomBlock;
+import de.jeff_media.customblocks.CustomBlockUtils;
 import io.th0rgal.oraxen.mechanics.Mechanic;
 import io.th0rgal.oraxen.mechanics.MechanicFactory;
 import io.th0rgal.oraxen.mechanics.MechanicsManager;
@@ -13,6 +14,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.logging.Level;
+
+import static de.jeff_media.customblocks.CustomBlockUtils.debug;
+import static de.jeff_media.customblocks.CustomBlockUtils.isDebug;
 
 public class OraxenBlock extends CustomBlock {
 
@@ -22,6 +29,10 @@ public class OraxenBlock extends CustomBlock {
     public OraxenBlock(String id) throws InvalidBlockDataException {
         super(id);
 
+        init(id);
+    }
+
+    private void init(String id) throws InvalidBlockDataException {
         // Blocks
         if (NoteBlockMechanicFactory.getInstance().getMechanic(id) != null) {
             type = ItemType.NOTE_BLOCK;
@@ -53,10 +64,21 @@ public class OraxenBlock extends CustomBlock {
     @Override
     public void place(Block block, OfflinePlayer player) {
         super.place(block, player);
+        debug("Placing Oraxen block: " + getId() + " for " + player + " at " + block);
         switch (type) {
             case FURNITURE:
                 block.setType(Material.AIR);
-                Entity placed = furnitureMechanic.place(block.getLocation(), getYaw(), getBlockFace());
+                debug("Placing furniture at " + block.getLocation());
+                Entity placed;
+                try {
+                    placed = furnitureMechanic.place(block.getLocation(), new ItemStack(Material.AIR), getYaw(), getBlockFace(), false);
+                } catch (Exception e) {
+                    if(isDebug()) {
+                        CustomBlockUtils.getLogger().log(Level.WARNING, "Couldn't use FurnitureMechanic#place with 5 arguments, trying with 3 arguments instead", e);
+                    }
+                    placed = furnitureMechanic.place(block.getLocation(), getYaw(), getBlockFace());
+                    debug("Placed furniture: " + placed + " at " + block.getLocation() + " with yaw " + getYaw() + " and blockface " + getBlockFace());
+                }
                 if (placed != null) {
                     entities.add(placed.getUniqueId());
 
@@ -68,12 +90,14 @@ public class OraxenBlock extends CustomBlock {
                 }
                 break;
             case NOTE_BLOCK:
+                debug("Placing note block at " + block.getLocation());
                 NoteBlockMechanicFactory.setBlockModel(block, getId());
                 break;
 
             default:
                 throw new IllegalStateException();
         }
+        debug("Placed Oraxen block: " + getId() + " for " + player + " at " + block);
     }
 
     @Override
@@ -84,6 +108,14 @@ public class OraxenBlock extends CustomBlock {
     @Override
     public void remove() {
         if (furnitureMechanic != null) {
+            try {
+                furnitureMechanic.removeNonSolidFurniture(furnitureMechanic.getBaseEntity(block));
+            } catch (Exception ignored) {
+            }
+            try {
+                furnitureMechanic.removeSolid(furnitureMechanic.getBaseEntity(block), block.getLocation(), getYaw());
+            } catch (Exception ignored) {
+            }
 
             entities.stream().map(Bukkit::getEntity).forEach(entity -> {
                 try {
@@ -125,45 +157,3 @@ public class OraxenBlock extends CustomBlock {
         NOTE_BLOCK, FURNITURE
     }
 }
-
-/*
-package de.jeff_media.customblocks.implentation;
-
-import de.jeff_media.customblocks.CustomBlock;
-import de.jeff_media.jefflib.exceptions.InvalidBlockDataException;
-import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory;
-import org.bukkit.block.Block;
-
-import java.lang.reflect.Method;
-
-public class OraxenBlock extends CustomBlock {
-
-    private static boolean disabled = false;
-    private static final Class<?> noteBlockMechanicFactoryClass;
-    private static final Object noteBlockMechanicFactoryInstance;
-    private static final Method getMechanicMethod;
-    private static final Method setBlockModelMethod;
-
-    static {
-        noteBlockMechanicFactoryClass = Class.forName("io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanicFactory");
-        noteBlockMechanicFactoryInstance = noteBlockMechanicFactoryClass.getMethod("getInstance").invoke(null);
-        getMechanicMethod
-    }
-
-    public OraxenBlock(String id) throws InvalidBlockDataException {
-        super(id);
-        if(NoteBlockMechanicFactory.getInstance().getMechanic(id) == null) throw new InvalidBlockDataException("Could not find Oraxen block: " + id);
-    }
-
-    @Override
-    public void place(Block block) {
-        NoteBlockMechanicFactory.setBlockModel(block, getId());
-    }
-
-    @Override
-    public String getNamespace() {
-        return null;
-    }
-}
-
-*/

@@ -15,7 +15,7 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
+            <id>spigot-snapshots</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
@@ -27,12 +27,12 @@
             <url>https://repo.jeff-media.com/public/</url>
         </repository>
         <repository>
-            <id>oraxen</id>
+            <id>oraxen-releases</id>
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
         </repository>
         <repository>
-            <id>reposilite-repository-snapshots</id>
+            <id>nexo-snapshots</id>
             <name>Nexo Repository</name>
             <url>https://repo.nexomc.com/snapshots</url>
         </repository>

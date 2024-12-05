@@ -10,13 +10,14 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
 
+@Setter
+@Getter
 public class VanillaBlock extends CustomBlock {
 
-    @Getter
-    @Setter
     private final BlockData blockData;
 
     public VanillaBlock(Material mat) {
@@ -59,6 +60,11 @@ public class VanillaBlock extends CustomBlock {
     public void place(Block block, OfflinePlayer player) {
         super.place(block, player);
         block.setBlockData(blockData);
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+        return new ItemStack(getMaterial());
     }
 
     @Override

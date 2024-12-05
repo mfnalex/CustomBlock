@@ -3,6 +3,8 @@ package de.jeff_media.customblocks.implentation;
 import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.api.NexoFurniture;
+import com.nexomc.nexo.api.NexoItems;
+import com.nexomc.nexo.items.ItemBuilder;
 import com.nexomc.nexo.mechanics.custom_block.noteblock.NoteBlockMechanicFactory;
 import com.nexomc.nexo.mechanics.furniture.FurnitureMechanic;
 import de.jeff_media.customblocks.CustomBlock;
@@ -13,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
@@ -101,6 +104,14 @@ public class NexoBlock extends CustomBlock {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+
+        ItemBuilder itemBuilder = NexoItems.itemFromId(getId());
+        if(itemBuilder == null) return null;
+        return itemBuilder.build();
     }
 
     private enum ItemType {

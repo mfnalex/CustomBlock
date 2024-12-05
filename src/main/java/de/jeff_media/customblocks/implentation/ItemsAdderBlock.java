@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
-
+import org.bukkit.inventory.ItemStack;
 
 
 public class ItemsAdderBlock extends CustomBlock {
@@ -110,6 +110,14 @@ public class ItemsAdderBlock extends CustomBlock {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+
+        CustomStack customStack = CustomFurniture.getInstance(getId());
+        if(customStack == null) return null;
+        return customStack.getItemStack();
     }
 
 }

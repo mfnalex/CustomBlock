@@ -3,6 +3,8 @@ package de.jeff_media.customblocks.implentation;
 import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import de.jeff_media.customblocks.CustomBlock;
 import de.jeff_media.customblocks.CustomBlockUtils;
+import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.items.ItemBuilder;
 import io.th0rgal.oraxen.mechanics.Mechanic;
 import io.th0rgal.oraxen.mechanics.MechanicFactory;
 import io.th0rgal.oraxen.mechanics.MechanicsManager;
@@ -103,6 +105,14 @@ public class OraxenBlock extends CustomBlock {
     @Override
     public String getNamespace() {
         return "oraxen";
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+
+        ItemBuilder itemBuilder = OraxenItems.getItemById(getId());
+        if(itemBuilder == null) return null;
+      return itemBuilder.build();
     }
 
     @Override

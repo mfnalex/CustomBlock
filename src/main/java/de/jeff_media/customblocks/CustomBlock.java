@@ -9,16 +9,18 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 public abstract class CustomBlock /*implements ConfigurationSerializable */{
 
-    @Getter @Setter protected Block block;
-    @Getter @Setter protected BlockData originalBlockData;
-    @Getter protected List<UUID> entities = new ArrayList<>();
+    @Setter protected Block block;
+    @Setter protected BlockData originalBlockData;
+    protected List<UUID> entities = new ArrayList<>();
 
     public static CustomBlock fromStringOrDefault(String fullId, Material fallback) {
         try {
@@ -103,13 +105,17 @@ public abstract class CustomBlock /*implements ConfigurationSerializable */{
         entities.clear();
     }
 
+    public ItemStack toItemStack(){
+        return null;
+    }
+
     public CustomBlock(String id) {
         this.id = id;
-    };
+    }
 
     public abstract String getNamespace();
 
-    @Getter protected final String id;
+    protected final String id;
 
     public abstract Material getMaterial();
 

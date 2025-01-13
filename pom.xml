@@ -119,6 +119,13 @@
             <groupId>com.nexomc</groupId>
             <artifactId>nexo</artifactId>
             <version>0.9.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

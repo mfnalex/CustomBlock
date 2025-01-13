@@ -3,7 +3,6 @@ package de.jeff_media.customblocks.implentation;
 import com.jeff_media.jefflib.exceptions.InvalidBlockDataException;
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.api.NexoFurniture;
-import com.nexomc.nexo.mechanics.custom_block.noteblock.NoteBlockMechanicFactory;
 import com.nexomc.nexo.mechanics.furniture.FurnitureMechanic;
 import de.jeff_media.customblocks.CustomBlock;
 import org.bukkit.Bukkit;
@@ -63,7 +62,7 @@ public class NexoBlock extends CustomBlock {
                 }
                 break;
             case NOTE_BLOCK:
-                NoteBlockMechanicFactory.Companion.setBlockModel(block, getId());
+                NexoBlocks.place(getId(), block.getLocation());
                 break;
 
             default:
